@@ -8,6 +8,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,8 +21,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import fr.isika.tripping.microservice.liste.beans.UserBean;
 import fr.isika.tripping.microservice.liste.model.ItemEntity;
 import fr.isika.tripping.microservice.liste.model.ListeEntity;
+import fr.isika.tripping.microservice.liste.proxies.MicroserviceUserProxy;
 import fr.isika.tripping.microservice.liste.repo.ItemRepo;
 import fr.isika.tripping.microservice.liste.repo.ListeRepo;
 
@@ -28,6 +32,7 @@ import fr.isika.tripping.microservice.liste.repo.ListeRepo;
 @Controller
 @RestController
 @RequestMapping (path = "/tripping/lists")
+
 public class ListeCtrl {
 
 	Logger log = LoggerFactory.getLogger(this.getClass());
@@ -38,11 +43,20 @@ public class ListeCtrl {
 	@Autowired
 	private ItemRepo itemRepo; 
 	
+	@Autowired
+	private MicroserviceUserProxy userProxy;
+	
+	
+	//++++++++++++++++++++ Find all users +++++++++++++++++++++
+	@GetMapping(path = "/findAllUsers")
+	public @ResponseBody Iterable<UserBean> getAllUsers(){
+		log.info("Tu es sur la bonne route ma bichettte");
+		return userProxy.getAllUsers();
+	}
 	
 	//++++++++++++++++++++ Find all items +++++++++++++++++++++
 	@GetMapping(path = "item/findAllItems")
 	public @ResponseBody Iterable<ItemEntity> getAllItems() {
-		log.info("Tu es sur la bonne route ma bichettte");
 		return itemRepo.findAll();
 	}
 	
@@ -85,7 +99,7 @@ public class ListeCtrl {
 	//++++++++++++++++++++++++++ Create a new list +++++++++++++
 	@PostMapping(path = "/createList")
 	public ResponseEntity<Void> createList(@RequestBody ListeEntity list){
-		log.info("In ListeCtrl ---------> method :createList ");
+		log.info("In ListeCtrl ---------> method :createList " + list.getUser());
 		ListeEntity createdList = listeRepo.save(list) ; 
 
 		if (createdList==null) 
@@ -177,6 +191,8 @@ public class ListeCtrl {
 		public @ResponseBody Optional<ListeEntity> findListById(@PathVariable Integer id) {
 			return listeRepo.findById(id);
 		}
+		
+
 }
 
 

@@ -24,14 +24,19 @@ public class ListeEntity {
 	@OneToMany(mappedBy = "liste", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<ItemEntity> items;
 	
+	private String user;
+	
 	public ListeEntity() {
 	}
 
-	public ListeEntity(Integer id, String category) {
+	public ListeEntity(Integer id, String category, List<ItemEntity> items, String user) {
 		super();
 		this.id = id;
 		this.category = category;
+		this.items = items;
+		this.user = user;
 	}
+
 
 
 	public Integer getId() {
@@ -57,6 +62,17 @@ public class ListeEntity {
 	public void setItems(List<ItemEntity> items) {
 		this.items = items;
 	}
+
+	public String getUser() {
+		return user;
+	}
+
+	public void setUser(String user) {
+		this.user = user;
+	}
+	
+	
+	
 
 
 }

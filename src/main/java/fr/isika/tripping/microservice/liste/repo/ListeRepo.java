@@ -12,6 +12,11 @@ public interface ListeRepo extends CrudRepository<ListeEntity, Integer>{
 	@Query("from ListeEntity l where l.category = :cat")
 	Optional<ListeEntity> findByCategory(@Param("cat")String category);
 
-	@Query("SELECT id FROM ListeEntity l WHERE l.category = :cat")
+	@Query("SELECT id FROM ListeEntity l WHERE l.category = :cat ")
 	Optional<Integer> findListIdByCategory(@Param("cat")String category);
+
+	@Query("from ListeEntity l where l.user = :user")
+	Iterable<ListeEntity> findByUser(@Param("user")String user);
+
+	Optional<ListeEntity> findByCategoryAndUser(String category, String user);
 }

@@ -8,6 +8,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
 import fr.isika.tripping.microservice.liste.model.ItemEntity;
+import fr.isika.tripping.microservice.liste.model.ListeEntity;
 
 public interface ItemRepo extends CrudRepository<ItemEntity, Integer> {
 	
@@ -26,6 +27,11 @@ public interface ItemRepo extends CrudRepository<ItemEntity, Integer> {
 	@Modifying
 	@Query(nativeQuery=true, value = "DELETE FROM ItemEntity i where i.itemLabel = :itemLabel")
 	void deleteByItemLabel(@Param("itemLabel")String itemLabel);
+
+	Iterable<ItemEntity> findByListe(ListeEntity usersList);
+
+//	@Query("from ItemEntity i where i.liste.category = :cat ")
+//	Iterable<ItemEntity> findItemsByCategoryAndUser(String category, String user);
 
 	//Integer deleteByItemLabel(String itemLabel);
 

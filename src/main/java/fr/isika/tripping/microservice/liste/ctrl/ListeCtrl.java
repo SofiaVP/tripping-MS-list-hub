@@ -8,8 +8,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -45,13 +43,18 @@ public class ListeCtrl {
 	
 	@Autowired
 	private MicroserviceUserProxy userProxy;
-	
-	
+
 	//++++++++++++++++++++ Find all users +++++++++++++++++++++
 	@GetMapping(path = "/findAllUsers")
 	public @ResponseBody Iterable<UserBean> getAllUsers(){
 		log.info("Tu es sur la bonne route ma bichettte");
 		return userProxy.getAllUsers();
+	}
+	
+	//++++++++++++++++++++ Find Lists By User +++++++++++++++++++++
+	@GetMapping(path = "/findListsByUser/{user}")
+	public @ResponseBody Iterable<ListeEntity> getListsByUser(@PathVariable String user){
+		return listeRepo.findByUser(user);
 	}
 	
 	//++++++++++++++++++++ Find all items +++++++++++++++++++++
@@ -71,6 +74,19 @@ public class ListeCtrl {
 	public @ResponseBody Iterable<ItemEntity> findItemsByCategory(@PathVariable String category) {
 		return itemRepo.findItemsByCategory(category);
 	}
+	
+	//++++++++++++++++++++++++++ find items by Liste category and user +++++++++++++
+	@GetMapping(path = "items/findItemsByListeCategory/category/{category}/user/{user}")
+	public @ResponseBody Iterable<ItemEntity> findItemsByCategoryAndUser(@PathVariable String category,@PathVariable String user) {
+		Optional<ListeEntity> optionalUsersList = listeRepo.findByCategoryAndUser(category, user);
+		ListeEntity usersList = new ListeEntity();
+		if(optionalUsersList.isPresent()) {
+			usersList = optionalUsersList.get();			
+		}
+		return itemRepo.findByListe(usersList);
+	}
+	
+
 	
 	//++++++++++++++++++++++++++ find item by itemLabel +++++++++++++
 	@GetMapping(path = "items/findItemByItemLabel/{itemLabel}")
@@ -94,6 +110,12 @@ public class ListeCtrl {
 	@GetMapping(path = "findListIdByCategory/{category}")
 	public @ResponseBody Optional<Integer> findListIdByCategory(@PathVariable String category) {
 		return listeRepo.findListIdByCategory(category);
+	}
+	
+	//++++++++++++++++++++++++++ find List By Category And User+++++++++++++
+	@GetMapping(path = "findListByCategoryAndUser/category/{category}/user/{user}")
+	public @ResponseBody Optional<ListeEntity> findListByCategoryAndUser(@PathVariable String category, @PathVariable String user) {
+		return listeRepo.findByCategoryAndUser(category, user);
 	}
 	
 	//++++++++++++++++++++++++++ Create a new list +++++++++++++
@@ -173,7 +195,7 @@ public class ListeCtrl {
 			ListeEntity listToBeDeleted = listfound.get();
 			listeRepo.delete(listToBeDeleted);
 		}else {
-			log.info("something went rong sorry");
+			log.info("something went wrong sorry");
 		}
 	}
 		

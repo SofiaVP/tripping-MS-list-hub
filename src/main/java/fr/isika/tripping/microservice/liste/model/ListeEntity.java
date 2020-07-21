@@ -37,6 +37,18 @@ public class ListeEntity {
 		this.user = user;
 	}
 
+	public ListeEntity( String category, String user) {
+		super();
+		this.category = category;
+		this.user = user;
+	}
+	
+	public ListeEntity(String category, List<ItemEntity> items, String user) {
+		super();
+		this.category = category;
+		this.items = items;
+		this.user = user;
+	}
 
 
 	public Integer getId() {

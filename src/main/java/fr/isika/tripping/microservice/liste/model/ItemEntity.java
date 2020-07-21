@@ -21,7 +21,7 @@ public class ItemEntity {
 	private boolean isInBag; 
 	
 	@ManyToOne
-	@JoinColumn(name = "liste_id", nullable = false)
+	@JoinColumn(name = "liste_id")
 	private ListeEntity liste;
 	
 	public ItemEntity() {
@@ -33,6 +33,13 @@ public class ItemEntity {
 		this.itemLabel = itemLabel;
 		this.quantity = quantity;
 		this.isInBag = isInBag;
+		this.liste = liste;
+	}
+	
+	public ItemEntity(String itemLabel, int quantity, ListeEntity liste) {
+		super();
+		this.itemLabel = itemLabel;
+		this.quantity = quantity;
 		this.liste = liste;
 	}
 
